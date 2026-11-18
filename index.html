@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#fcf3e2">
+<title>和黄花鱼约饭</title>
+<meta name="description" content="黄花鱼给你发来一张约饭邀请卡。">
+<style>
+:root{--ink:#36271e;--paper:#fffaf0;--red:#ad3328;--line:#e7d7bd;--muted:#745d49}
+*{box-sizing:border-box}body{margin:0;min-height:100svh;display:grid;place-items:center;padding:24px 16px;background:radial-gradient(#d8bfa0 1px,transparent 1px) 0 0/18px 18px,#fcf3e2;color:var(--ink);font-family:system-ui,"PingFang SC","Microsoft YaHei",sans-serif}
+main{width:min(100%,568px);background:var(--paper);border:1px solid var(--line);border-radius:27px;box-shadow:0 6px 0 #e9d5b6,0 20px 55px #5e311915;padding:clamp(19px,5vw,38px);text-align:center}
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px dashed #ddc8aa;padding-bottom:16px;color:var(--red);font-weight:800;font-size:13px;letter-spacing:.12em}
+#step{color:var(--muted);font-size:12px;letter-spacing:.07em}section{padding-top:24px}section[hidden]{display:none}
+h1,h2{font-family:"Songti SC","Noto Serif SC",serif;font-weight:900;text-wrap:balance;line-height:1.27;margin:12px 0}h1{font-size:clamp(34px,8vw,53px)}h2{font-size:clamp(28px,7vw,39px)}p{color:var(--muted);line-height:1.6;margin:8px 0 20px}
+.figure{height:144px;width:218px;margin:3px auto 18px;position:relative;display:grid;place-items:center}
+.plate{width:132px;height:132px;border-radius:50%;background:#ffe9b7;border:2px solid #e7bc72;box-shadow:inset 0 0 0 8px #fff4d9;transform:rotate(-12deg);display:grid;place-items:center}
+.fish{position:relative;width:80px;height:49px;border:2px solid #813b23;border-radius:52% 58% 55% 52%;background:#f7b943;box-shadow:inset 0 -9px 0 #e89531;transform:translateX(-5px)}
+.fish::before{content:"";position:absolute;width:25px;height:29px;right:-22px;top:7px;background:#d87730;border:2px solid #813b23;border-radius:70% 22% 22% 70%;transform:rotate(-7deg);z-index:-1}
+.fish::after{content:"";position:absolute;width:7px;height:7px;left:15px;top:15px;background:#43291a;border-radius:50%;box-shadow:0 10px 0 1px #ed8957}
+.fin{position:absolute;left:37px;top:13px;width:15px;height:20px;border-left:2px solid #ae5925;border-bottom:2px solid #ae5925;border-radius:50%;transform:rotate(25deg)}
+.spark{position:absolute;color:#ae3e30;font-size:24px}.spark:first-child{left:15px;top:18px}.spark:last-child{right:15px;bottom:20px}
+button,input{font:inherit}button{min-height:48px;cursor:pointer;font-weight:750;border-radius:14px;border:1px solid transparent;padding:10px 16px;touch-action:manipulation}button:focus-visible,input:focus-visible{outline:3px solid #aa4d27;outline-offset:3px}button:disabled{cursor:default;opacity:.5}
+.primary{background:var(--red);color:#fff9e9;border-color:#91261e;box-shadow:0 3px 0 #81241d}.primary:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 #81241d}.secondary{background:#fffaf0;color:#644534;border-color:#dcc5a7}
+.play{height:152px;position:relative;margin-top:6px}.yes,.no{position:absolute;width:calc(50% - 6px);top:51px}.yes{left:0}.no{left:calc(50% + 6px);transition:top .19s ease,left .19s ease}
+#tease{min-height:3.2em;margin-bottom:4px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:22px 0}.food{background:#fff4e0;border:1px solid var(--line);color:var(--ink);padding:10px 2px;font-size:14px}.food span{display:block;font-size:25px;margin-bottom:3px}.food[aria-pressed=true]{color:#8b261c;border-color:var(--red);background:#ffe2ce;box-shadow:inset 0 0 0 1px var(--red)}
+.actions{display:flex;gap:10px;margin-top:22px}.actions .primary{flex:1}.fields{text-align:left;display:grid;gap:14px;margin:22px 0}.fields label{display:grid;gap:6px;font-weight:700}.fields input{width:100%;min-width:0;min-height:49px;padding:9px 12px;background:#fff4e0;color:var(--ink);border:1px solid var(--line);border-radius:12px}
+.ticket{white-space:pre-line;text-align:left;padding:16px 19px;background:#fff0d4;border:1px dashed #c79a65;border-radius:14px;line-height:1.75;margin:16px 0;color:var(--ink);overflow-wrap:anywhere}.status{min-height:1.6em;margin:12px 0 0;font-size:14px}
+@media(prefers-reduced-motion:reduce){.no{transition:none}}@media(max-width:345px){header{letter-spacing:0}.actions{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<main>
+<header><span>🐟 黄花鱼的约饭邀请</span><span id="step">邀请</span></header>
+<section id="invite">
+<div class="figure" aria-hidden="true"><span class="spark">✦</span><div class="plate"><div class="fish"><span class="fin"></span></div></div><span class="spark">✦</span></div>
+<h1>你要和黄花鱼吃饭吗</h1>
+<p id="tease" aria-live="polite">黄花鱼已经在想菜单了。</p>
+<div class="play"><button type="button" class="primary yes" id="yes">要！</button><button type="button" class="secondary no" id="no">不要</button></div>
+</section>
+<section id="menu" hidden>
+<h2 tabindex="-1">今天想吃什么？</h2>
+<p>选一样你最想吃的。</p>
+<div class="grid" id="foods" role="group" aria-label="口味选择"></div>
+<div class="actions"><button type="button" class="secondary" data-back="invite">返回</button><button type="button" class="primary" id="next" disabled>选个时间 →</button></div>
+</section>
+<section id="schedule" hidden>
+<h2 tabindex="-1">哪天一起吃？</h2>
+<p id="choice"></p>
+<form id="plan">
+<div class="fields"><label>日期<input type="date" name="date" required></label><label>时间<input type="time" name="time" required></label></div>
+<div class="actions"><button type="button" class="secondary" data-back="menu">换个口味</button><button type="submit" class="primary">生成约饭卡</button></div>
+</form>
+</section>
+<section id="done" hidden>
+<h2 tabindex="-1">约饭卡做好啦！</h2>
+<p>把这张卡发给黄花鱼，一起确认时间。</p>
+<div class="ticket" id="ticket"></div>
+<div class="actions"><button type="button" class="secondary" data-back="schedule">改时间</button><button type="button" class="primary" id="copy">复制约饭卡</button></div>
+<p class="status" id="status" role="status"></p>
+</section>
+</main>
+<script>
+const get = id => document.getElementById(id);
+const steps = {invite:'邀请',menu:'选口味',schedule:'选时间',done:'约饭卡'};
+function show(view) {
+  for (const id of Object.keys(steps)) get(id).hidden = id !== view;
+  get('step').textContent = steps[view];
+  (get(view).querySelector('h2') || get('yes')).focus({preventScroll:true});
+}
+document.querySelectorAll('[data-back]').forEach(button => {
+  button.addEventListener('click', () => show(button.dataset.back));
+});
+const reactions = ['你确定吗？','不和他吃饭，他会伤心的 🥺','就一起吃一顿嘛！','黄花鱼把碗筷都摆好了。','真的不考虑一口热乎的吗？'];
+const escapeSpots = [['0px','0px'],['0px','calc(50% + 6px)'],['104px','0px'],['104px','calc(50% + 6px)']];
+let dodges = 0;
+get('no').addEventListener('click', () => {
+  const button = get('no');
+  const [top,left] = escapeSpots[dodges % escapeSpots.length];
+  button.style.top = top;
+  button.style.left = left;
+  const message = reactions[dodges % reactions.length];
+  button.textContent = ['你确定吗？','再想想嘛','真的不要？','就一顿嘛'][dodges % 4];
+  get('tease').textContent = message;
+  dodges++;
+});
+get('yes').addEventListener('click', () => show('menu'));
+let selected = '';
+const foods = [['🍲','火锅'],['🌶️','川菜'],['🥟','粤菜'],['🦞','湘菜'],['🍢','烧烤'],['🍣','日料'],['🍜','面食'],['🥩','韩餐'],['🎲','都可以']];
+for (const [icon, label] of foods) {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'food';
+  button.setAttribute('aria-pressed','false');
+  const emoji = document.createElement('span');
+  emoji.setAttribute('aria-hidden','true');
+  emoji.textContent = icon;
+  button.append(emoji,label);
+  button.addEventListener('click', () => {
+    get('foods').querySelector('[aria-pressed=true]')?.setAttribute('aria-pressed','false');
+    button.setAttribute('aria-pressed','true');
+    selected = label;
+    get('next').disabled = false;
+  });
+  get('foods').append(button);
+}
+const plan = get('plan');
+const dateField = plan.elements.namedItem('date');
+const timeField = plan.elements.namedItem('time');
+const pad = n => String(n).padStart(2,'0');
+function today() {
+  const now = new Date();
+  return [now.getFullYear(), pad(now.getMonth()+1), pad(now.getDate())].join('-');
+}
+get('next').addEventListener('click', () => {
+  get('choice').textContent = selected === '都可以' ? '口味到时候一起定。' : '今天这顿想吃' + selected + '。';
+  dateField.min = today();
+  show('schedule');
+});
+plan.addEventListener('input', () => timeField.setCustomValidity(''));
+plan.addEventListener('submit', event => {
+  event.preventDefault();
+  const date = new Date(dateField.value + 'T' + timeField.value);
+  if (date <= new Date()) {
+    timeField.setCustomValidity('选一个还没到的时间吧。');
+    timeField.reportValidity();
+    return;
+  }
+  const when = new Intl.DateTimeFormat('zh-CN', {dateStyle:'full'}).format(date);
+  const food = selected === '都可以' ? '吃什么都可以' : '想吃' + selected;
+  get('ticket').textContent = '🐟 黄花鱼，我们约饭吧！\n' + food + '\n' + when + ' ' + timeField.value + '\n这个时间你方便吗？';
+  get('status').textContent = '';
+  show('done');
+});
+get('copy').addEventListener('click', async () => {
+  const ticket = get('ticket');
+  try {
+    await navigator.clipboard.writeText(ticket.textContent);
+    get('status').textContent = '已复制，可以粘贴到微信发给黄花鱼。';
+  } catch {
+    const range = document.createRange();
+    range.selectNodeContents(ticket);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);
+    get('status').textContent = '已选中约饭卡，长按或使用快捷键复制。';
+  }
+});
+</script>
+</body>
+</html>
